@@ -43,8 +43,6 @@ class DataExporter:
         """
         export_format = _parse_format(format)
         _validate(data)
-        export_format = _parse_format(format)
-        _validate(data)
         try:
             key = _cache_key(data, export_format)
             output = self.cache.get(key)
