@@ -3,10 +3,12 @@ import io
 import json
 from decimal import Decimal
 from typing import Any
+from unittest.mock import Mock
 
 import pytest
 
-from boost_exporter import DataExporter, ExportError, ExportFormat
+from boost_exporter import DataExporter, ExportCache, ExportError, ExportFormat
+from boost_exporter.exporter import _SERIALISERS
 
 
 def test_json_export_round_trips_the_sample(sample_rows: list[dict[str, Any]]) -> None:
@@ -91,3 +93,50 @@ def test_empty_data_exports_without_error(
     data: list[dict[str, Any]], export_format: str, expected: str
 ) -> None:
     assert DataExporter().export(data, export_format) == expected
+
+
+@pytest.fixture
+def serialiser_spies(monkeypatch: pytest.MonkeyPatch) -> dict[ExportFormat, Mock]:
+    """Wrap each serialiser in a Mock so tests can count real serialisations."""
+    spies = {fmt: Mock(wraps=serialise) for fmt, serialise in _SERIALISERS.items()}
+    for fmt, spy in spies.items():
+        monkeypatch.setitem(_SERIALISERS, fmt, spy)
+    return spies
+
+
+def test_repeat_exports_are_served_from_the_cache(
+    sample_rows: list[dict[str, Any]], serialiser_spies: dict[ExportFormat, Mock]
+) -> None:
+    exporter = DataExporter()
+
+    for _ in range(2):
+        exporter.export(sample_rows, "csv")
+        exporter.export(sample_rows, "json")
+        exporter.export([], "csv")  # "" is a cached export, not a miss
+
+    assert serialiser_spies[ExportFormat.CSV].call_count == 2  # sample + empty
+    assert serialiser_spies[ExportFormat.JSON].call_count == 1
+
+
+def test_changed_data_is_not_served_from_the_cache(
+    sample_rows: list[dict[str, Any]],
+) -> None:
+    exporter = DataExporter()
+    before = exporter.export(sample_rows, "json")
+
+    sample_rows[0]["quantity"] = 999
+
+    assert exporter.export(sample_rows, "json") != before
+
+
+def test_key_order_is_part_of_the_cache_key() -> None:
+    exporter = DataExporter()
+
+    assert exporter.export([{"a": 1, "b": 2}], "csv") == "a,b\r\n1,2\r\n"
+    assert exporter.export([{"b": 2, "a": 1}], "csv") == "b,a\r\n2,1\r\n"
+
+
+def test_uses_the_cache_it_is_given() -> None:
+    cache = ExportCache()
+
+    assert DataExporter(cache).cache is cache
