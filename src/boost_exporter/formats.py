@@ -39,7 +39,6 @@ def to_json(rows: list[dict[str, Any]]) -> str:
     return json.dumps(rows, default=encode_value, ensure_ascii=False, allow_nan=False)
 
 
-
 def to_csv(rows: list[dict[str, Any]]) -> str:
     """Serialise rows to CSV with a header row.
 

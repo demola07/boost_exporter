@@ -30,6 +30,7 @@ def test_json_export_keeps_decimal_precision() -> None:
 
     assert output == '[{"amount": "1.10"}]'
 
+
 def test_csv_export_round_trips_the_sample(sample_rows: list[dict[str, Any]]) -> None:
     output = DataExporter().export(sample_rows, ExportFormat.CSV)
 
