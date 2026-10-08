@@ -3,7 +3,7 @@
 A small Python module that exports datasets (a `list[dict]`) to **CSV** or **JSON**, with an in-memory cache that expires entries
 after one hour.
 
-<!-- Walkthrough video: add the link here -->
+📹 **[Watch the walkthrough video](https://drive.google.com/file/d/1LixNHLnsHWTZDLiPOmSkgayhMTwen2L0/view?usp=sharing)**: a short tour of the code, with a demo.
 
 ## Quick start
 
