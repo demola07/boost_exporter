@@ -22,6 +22,27 @@ uv run pre-commit install           # ruff check, ruff format and mypy --strict 
 uv run pre-commit run --all-files   # run the same checks by hand
 ```
 
+## Try it with the sample dataset
+
+`scripts/export_sample.py` exports the provided sample dataset from the
+command line. The export goes to stdout, so you can redirect it to a file:
+
+```bash
+uv run python scripts/export_sample.py csv > sample.csv
+uv run python scripts/export_sample.py json > sample.json
+```
+
+It also prints a one-line summary to stderr:
+
+```
+984 rows as csv: 4.2 ms, repeat from cache 1.3 ms
+```
+
+The script exports the same data twice in one run. The first export is a cache miss: it
+serialises every row and stores the result. The repeat is a cache hit: it skips
+serialisation and returns the stored export. The cache lives in memory for the life of
+the process, so each run of the script starts with an empty cache.
+
 ## Usage
 
 ```python
@@ -78,6 +99,8 @@ src/boost_exporter/
 ├── formats.py     # ExportFormat, encode_value, to_csv, to_json
 ├── exporter.py    # DataExporter, ExportError, validation, cache key
 └── cache.py       # ExportCache (one-hour TTL)
+scripts/
+└── export_sample.py         # export the sample dataset from the command line
 tests/
 ├── conftest.py              # sample_rows fixture (a fresh deep copy per test)
 ├── fixtures/sample_data.py  # the provided dataset
