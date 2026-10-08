@@ -1,0 +1,32 @@
+[project]
+name = "boost-exporter"
+version = "0.1.0"
+description = "Export list-of-dict datasets to CSV or JSON, with a TTL cache."
+readme = "README.md"
+authors = [
+    { name = "Ademola Adesina", email = "demolasobaki@gmail.com" }
+]
+requires-python = ">=3.12"
+dependencies = [
+    "attrs>=26.1.0",
+]
+
+[build-system]
+requires = ["uv_build>=0.9.22,<0.10.0"]
+build-backend = "uv_build"
+
+[dependency-groups]
+dev = [
+    "mypy>=2.4.0",
+    "pytest>=9.1.1",
+    "ruff>=0.16.10",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.ruff]
+extend-exclude = ["tests/sample_data.py"]
+
+[tool.mypy]
+strict = true
