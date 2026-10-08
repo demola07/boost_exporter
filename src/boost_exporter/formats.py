@@ -44,8 +44,13 @@ def to_csv(rows: list[dict[str, Any]]) -> str:
 
     The header is the ordered union of keys across all rows, so a column that only
     appears in later rows is still exported; rows without it get an empty cell.
+
+    With no columns - an empty dataset, or rows with no keys - there is no header to
+    write, so the result is an empty string.
     """
     fieldnames = list(dict.fromkeys(key for row in rows for key in row))
+    if not fieldnames:
+        return ""
     buffer = io.StringIO()
     writer = csv.DictWriter(buffer, fieldnames=fieldnames)
     writer.writeheader()

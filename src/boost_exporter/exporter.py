@@ -23,7 +23,8 @@ class DataExporter:
     def export(self, data: Rows, format: ExportFormat | str) -> str:
         """Serialise `data` to `format` and return the result as a string.
 
-        `format` may be an ExportFormat or its string value, e.g. "csv".
+        format` may be an ExportFormat or its string value, e.g. "csv". An empty
+        dataset exports as "" for CSV and "[]" for JSON.
 
         Raises:
             ExportError: if the format is unsupported, `data` is not a list of dicts,

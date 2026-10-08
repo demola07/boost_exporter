@@ -77,3 +77,17 @@ def test_invalid_input_raises_export_error(
 ) -> None:
     with pytest.raises(ExportError, match=message):
         DataExporter().export(data, export_format)
+
+
+@pytest.mark.parametrize(
+    ("data", "export_format", "expected"),
+    [
+        pytest.param([], "csv", "", id="empty-csv"),
+        pytest.param([], "json", "[]", id="empty-json"),
+        pytest.param([{}], "csv", "", id="no-columns-csv"),
+    ],
+)
+def test_empty_data_exports_without_error(
+    data: list[dict[str, Any]], export_format: str, expected: str
+) -> None:
+    assert DataExporter().export(data, export_format) == expected
