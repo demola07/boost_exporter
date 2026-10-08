@@ -38,7 +38,7 @@ rows = [
 
 exporter = DataExporter()                    # creates its own ExportCache
 exporter.export(rows, ExportFormat.CSV)      # the enum...
-exporter.export(rows, "json")                # ...or its string value
+exporter.export(rows, "json")                
 
 try:
     exporter.export(rows, "xml")
@@ -66,8 +66,7 @@ its expiry, pass one in: `DataExporter(ExportCache(ttl=600))`.
 ## How it's built
 
 - **Python 3.12**, packaged with **uv** (`pyproject.toml` + `uv.lock`).
-- **attrs** for `ExportCache`; everything else uses the standard library (`csv`,
-  `json`, `hashlib`).
+- **attrs** for `ExportCache`
 - **pytest** for tests, **ruff** for linting and formatting, **mypy** in strict mode
   for type checking, all run on every commit through **pre-commit**.
 
@@ -81,7 +80,7 @@ src/boost_exporter/
 └── cache.py       # ExportCache (one-hour TTL)
 tests/
 ├── conftest.py              # sample_rows fixture (a fresh deep copy per test)
-├── fixtures/sample_data.py  # the provided dataset, unchanged
+├── fixtures/sample_data.py  # the provided dataset
 ├── test_exporter.py
 └── test_cache.py
 ```
