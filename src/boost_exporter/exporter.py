@@ -3,11 +3,12 @@
 from collections.abc import Callable
 from typing import Any
 
-from boost_exporter.formats import ExportFormat, to_json
+from boost_exporter.formats import ExportFormat, to_csv, to_json
 
 type Rows = list[dict[str, Any]]
 
 _SERIALISERS: dict[ExportFormat, Callable[[Rows], str]] = {
+    ExportFormat.CSV: to_csv,
     ExportFormat.JSON: to_json,
 }
 
